@@ -1,0 +1,8 @@
+vastai
+fastapi
+uvicorn
+ffmpeg-python
+yt-dlp
+boto3
+requests
+pillow
