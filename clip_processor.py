@@ -15,7 +15,6 @@ def download_media(audio_url: str, video_url: str, output_dir: str, video_sectio
     print(f"Downloading audio from {audio_url}...")
     subprocess.run([
         "yt-dlp", "--no-playlist", "-f", "bestaudio[ext=m4a]/bestaudio", 
-        "--downloader", "aria2c", "--downloader-args", "aria2c:-x 16 -s 16 -k 1M",
         "-o", audio_path, audio_url
     ], check=True, stdin=subprocess.DEVNULL)
 
