@@ -33,4 +33,6 @@ worker_config = WorkerConfig(
 )
 
 if __name__ == "__main__":
+    if "WORKER_PORT" not in os.environ:
+        os.environ["WORKER_PORT"] = "3000"
     Worker(worker_config).run()
