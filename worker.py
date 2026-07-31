@@ -2,6 +2,9 @@ from vastai import Worker, WorkerConfig, HandlerConfig, BenchmarkConfig, LogActi
 import subprocess
 import os
 
+print("Installing required system packages (ffmpeg, aria2)...")
+os.system("apt-get update && apt-get install -y ffmpeg aria2")
+
 # Start the local FastAPI server in the background and pipe output to a log file
 server_log = open("server.log", "w")
 subprocess.Popen(["python3", "server.py"], stdout=server_log, stderr=subprocess.STDOUT)
