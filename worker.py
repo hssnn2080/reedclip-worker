@@ -2,8 +2,8 @@ from vastai import Worker, WorkerConfig, HandlerConfig, BenchmarkConfig, LogActi
 import subprocess
 import os
 
-print("Installing required system packages (ffmpeg, aria2)...")
-os.system("export TZ=UTC && export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -yq tzdata ffmpeg aria2")
+print("Downloading and installing static ffmpeg to avoid any apt-get timezone hangs...")
+os.system("wget -q https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz && tar xf ffmpeg-release-amd64-static.tar.xz && mv ffmpeg-*-static/ffmpeg /usr/local/bin/ && mv ffmpeg-*-static/ffprobe /usr/local/bin/")
 
 # Start the local FastAPI server in the background and pipe output to a log file
 server_log = open("server.log", "w")
