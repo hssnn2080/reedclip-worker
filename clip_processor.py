@@ -86,11 +86,10 @@ def process_clip(
     
     a = aud.audio.filter('afade', type='in', start_time=0, duration=fade_dur)
     a = a.filter('afade', type='out', start_time=duration_s - fade_dur, duration=fade_dur)
+    # Reverted to NVENC hardware encoding
+    out = ffmpeg.output(v, a, output_path, vcodec='h264_nvenc', bf=0, movflags='faststart', **{'profile:v': 'main', 'b:v': '3000k', 'maxrate': '3500k', 'bufsize': '3500k', 'b:a': '128k'})
     
-    # Use libx264 instead of nvenc to ensure compatibility on any host without custom ffmpeg compilation
-    out = ffmpeg.output(v, a, output_path, vcodec='libx264', preset='fast', movflags='faststart', **{'profile:v': 'main', 'b:v': '3000k', 'maxrate': '3500k', 'bufsize': '3500k', 'b:a': '128k'})
-    
-    print(f"Running ffmpeg for clip {output_path} (Software CPU H.264)...")
+    print(f"Running ffmpeg for clip {output_path} (HARDWARE NVENC ONLY)...")
     ffmpeg.run(out, overwrite_output=True, capture_stdout=True, capture_stderr=True)
 
 def generate_clips(
