@@ -51,10 +51,9 @@ def process_job(payload):
         shutil.rmtree(out_dir, ignore_errors=True)
 
 @app.post("/generate")
-async def generate(request: Request):
+async def generate(request: Request, background_tasks: BackgroundTasks):
     payload = await request.json()
-    # We block here. Vast PyWorker handles max_queue_time so it can scale up if we are busy.
-    process_job(payload)
+    background_tasks.add_task(process_job, payload)
     return {"status": "ok"}
 
 if __name__ == "__main__":
