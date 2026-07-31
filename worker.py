@@ -3,7 +3,7 @@ import subprocess
 import os
 
 print("Installing required system packages (ffmpeg, aria2)...")
-os.system("apt-get update && apt-get install -y ffmpeg aria2")
+os.system("DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq tzdata ffmpeg aria2")
 
 # Start the local FastAPI server in the background and pipe output to a log file
 server_log = open("server.log", "w")
