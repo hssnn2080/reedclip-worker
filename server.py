@@ -47,6 +47,10 @@ def process_job(payload):
             print(f"Job {job_id} finished successfully.")
     except Exception as e:
         print(f"Job {job_id} failed: {e}")
+        try:
+            requests.post('https://reedclip.com/api/webhook/vast', json={'jobId': job_id, 'error': str(e)})
+        except:
+            pass
     finally:
         shutil.rmtree(out_dir, ignore_errors=True)
 
