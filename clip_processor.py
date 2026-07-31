@@ -104,8 +104,22 @@ def generate_clips(
     """Main pipeline to generate all clips."""
     os.makedirs(output_dir, exist_ok=True)
     
+    import json
+    if not audio_meta:
+        try:
+            res = subprocess.run(["yt-dlp", "--dump-json", audio_url], capture_output=True, text=True)
+            audio_meta = json.loads(res.stdout)
+        except:
+            pass
+    if not video_meta:
+        try:
+            res = subprocess.run(["yt-dlp", "--dump-json", video_url], capture_output=True, text=True)
+            video_meta = json.loads(res.stdout)
+        except:
+            pass
+            
     audio_dur_ms = int(float(audio_meta.get('duration', 60)) * 1000) if audio_meta else 60000
-    video_dur_s = float(video_meta.get('duration', 0)) if video_meta else float('inf')
+    video_dur_s = float(video_meta.get('duration', 3600)) if video_meta else 3600.0
     
     actual_audio_skip_ms = audio_skip_minutes * 60 * 1000
     if audio_dur_ms > actual_audio_skip_ms + 10000: # Ensure at least 10s of audio left
