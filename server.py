@@ -61,5 +61,5 @@ async def generate(request: Request, background_tasks: BackgroundTasks):
     return {"status": "ok"}
 
 if __name__ == "__main__":
-    print("Application startup complete.")
+    print("Application startup complete.", flush=True)
     uvicorn.run(app, host="127.0.0.1", port=18000)

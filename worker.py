@@ -7,7 +7,7 @@ os.system("export TZ=UTC && export DEBIAN_FRONTEND=noninteractive && apt-get upd
 
 # Start the local FastAPI server in the background and pipe output to a log file
 server_log = open("server.log", "w")
-subprocess.Popen(["python3", "server.py"], stdout=server_log, stderr=subprocess.STDOUT)
+subprocess.Popen(["python3", "-u", "server.py"], stdout=server_log, stderr=subprocess.STDOUT)
 
 worker_config = WorkerConfig(
     model_server_url="http://127.0.0.1",
