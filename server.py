@@ -47,9 +47,9 @@ def process_queue():
                     audio_url=job.get('audioUrl'),
                     video_url=job.get('videoUrl'),
                     output_dir=out_dir,
-                    clip_duration=job.get('clipDuration', 30),
-                    audio_skip_minutes=job.get('audioSkipMinutes', 0),
-                    video_skip_minutes=job.get('videoSkipMinutes', 1)
+                    clip_duration=int(job.get('clipDuration') or 30),
+                    audio_skip_minutes=int(job.get('audioSkipMinutes') or 0),
+                    video_skip_minutes=int(job.get('videoSkipMinutes') or 1)
                 ))
                 
                 if clips:
@@ -83,6 +83,18 @@ def process_queue():
 @app.on_event("startup")
 def startup_event():
     threading.Thread(target=process_queue, daemon=True).start()
+
+@app.get("/")
+def health_root():
+    return {"status": "ok"}
+
+@app.get("/status")
+def health_status():
+    return {"status": "ok"}
+
+@app.get("/api/status")
+def health_api_status():
+    return {"status": "ok"}
 
 @app.post("/generate")
 async def generate(request: Request):
