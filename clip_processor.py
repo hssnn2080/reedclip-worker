@@ -14,12 +14,13 @@ def download_media(audio_url: str, video_url: str, output_dir: str, video_sectio
 
     print(f"Downloading audio from {audio_url}...")
     subprocess.run([
-        "yt-dlp", "--no-playlist", "-f", "bestaudio[ext=m4a]/bestaudio", 
+        "yt-dlp", "--no-playlist", "--extractor-args", "youtube:player_client=android", "-f", "bestaudio[ext=m4a]/bestaudio", 
+        "--downloader", "aria2c", "--downloader-args", "aria2c:-x 16 -s 16 -k 1M",
         "-o", audio_path, audio_url
     ], check=True, stdin=subprocess.DEVNULL)
 
     print(f"Downloading video from {video_url}...")
-    cmd = ["yt-dlp", "--no-playlist", "-f", "bestvideo[height>=1080][ext=mp4]/bestvideo/best", "--merge-output-format", "mp4"]
+    cmd = ["yt-dlp", "--no-playlist", "--extractor-args", "youtube:player_client=android", "-f", "bestvideo[height>=1080][ext=mp4]/bestvideo/best", "--merge-output-format", "mp4"]
     
     if video_sections:
         for sec in video_sections:
@@ -107,13 +108,13 @@ def generate_clips(
     import json
     if not audio_meta:
         try:
-            res = subprocess.run(["yt-dlp", "--dump-json", audio_url], capture_output=True, text=True)
+            res = subprocess.run(["yt-dlp", "--dump-json", "--extractor-args", "youtube:player_client=android", audio_url], capture_output=True, text=True)
             audio_meta = json.loads(res.stdout)
         except:
             pass
     if not video_meta:
         try:
-            res = subprocess.run(["yt-dlp", "--dump-json", video_url], capture_output=True, text=True)
+            res = subprocess.run(["yt-dlp", "--dump-json", "--extractor-args", "youtube:player_client=android", video_url], capture_output=True, text=True)
             video_meta = json.loads(res.stdout)
         except:
             pass
