@@ -13,28 +13,34 @@ def download_media(audio_url: str, video_url: str, output_dir: str, video_sectio
     audio_path = os.path.join(output_dir, "input_audio.m4a")
 
     print(f"Downloading audio from {audio_url}...")
-    subprocess.run([
-        "yt-dlp", "--no-playlist", "--extractor-args", "youtube:player_client=android", "-f", "bestaudio[ext=m4a]/bestaudio", 
-        "-o", audio_path, audio_url
-    ], check=True, stdin=subprocess.DEVNULL)
+    try:
+        subprocess.run([
+            "yt-dlp", "--no-playlist", "--extractor-args", "youtube:player_client=android", "-f", "bestaudio[ext=m4a]/bestaudio", 
+            "-o", audio_path, audio_url
+        ], check=True, stdin=subprocess.DEVNULL, capture_output=True, text=True)
+    except subprocess.CalledProcessError as e:
+        raise Exception(f"Audio download failed: {e.stderr}")
 
     print(f"Downloading video from {video_url}...")
     cmd = ["yt-dlp", "--no-playlist", "--extractor-args", "youtube:player_client=android", "-f", "bestvideo[height>=1080][ext=mp4]/bestvideo/best", "--merge-output-format", "mp4"]
     
-    if video_sections:
-        for sec in video_sections:
-            cmd.extend(["--download-sections", sec])
-        video_output_template = os.path.join(output_dir, "input_video_%(autonumber)s.mp4")
-        cmd.extend(["-o", video_output_template, video_url])
-        subprocess.run(cmd, check=True, stdin=subprocess.DEVNULL)
-        
-        video_paths = sorted(glob.glob(os.path.join(output_dir, "input_video_*.mp4")))
-        return audio_path, video_paths
-    else:
-        video_path = os.path.join(output_dir, "input_video.mp4")
-        cmd.extend(["-o", video_path, video_url])
-        subprocess.run(cmd, check=True, stdin=subprocess.DEVNULL)
-        return audio_path, [video_path]
+    try:
+        if video_sections:
+            for sec in video_sections:
+                cmd.extend(["--download-sections", sec])
+            video_output_template = os.path.join(output_dir, "input_video_%(autonumber)s.mp4")
+            cmd.extend(["-o", video_output_template, video_url])
+            subprocess.run(cmd, check=True, stdin=subprocess.DEVNULL, capture_output=True, text=True)
+            
+            video_paths = sorted(glob.glob(os.path.join(output_dir, "input_video_*.mp4")))
+            return audio_path, video_paths
+        else:
+            video_path = os.path.join(output_dir, "input_video.mp4")
+            cmd.extend(["-o", video_path, video_url])
+            subprocess.run(cmd, check=True, stdin=subprocess.DEVNULL, capture_output=True, text=True)
+            return audio_path, [video_path]
+    except subprocess.CalledProcessError as e:
+        raise Exception(f"Video download failed: {e.stderr}")
 
 def get_fixed_cuts(audio_dur_ms: int, clip_duration_s: int) -> List[Tuple[int, int]]:
     """Generates fixed duration cut points."""
