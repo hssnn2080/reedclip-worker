@@ -96,16 +96,8 @@ def health_status():
 def health_api_status():
     return {"status": "ok"}
 
-import asyncio
-
 @app.post("/generate")
-async def generate(request: Request):
-    # The actual processing happens in the background polling thread.
-    # We must keep this request hanging so the Vast Autoscaler Gateway
-    # registers this instance as "Active" and doesn't kill it prematurely!
-    # Vercel will time out after 10 seconds and disconnect, but Vast Gateway 
-    # will keep waiting for 5 minutes, keeping the instance alive.
-    await asyncio.sleep(300)
+def generate(request: Request):
     return {"status": "ok"}
 
 if __name__ == "__main__":
