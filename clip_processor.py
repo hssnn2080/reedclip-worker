@@ -95,7 +95,11 @@ def process_clip(
     out = ffmpeg.output(v, a, output_path, vcodec='h264_nvenc', bf=0, movflags='faststart', **{'profile:v': 'main', 'b:v': '3000k', 'maxrate': '3500k', 'bufsize': '3500k', 'b:a': '128k'})
     
     print(f"Running ffmpeg for clip {output_path} (HARDWARE NVENC ONLY)...")
-    ffmpeg.run(out, overwrite_output=True, capture_stdout=True, capture_stderr=True)
+    try:
+        ffmpeg.run(out, overwrite_output=True, capture_stdout=True, capture_stderr=True)
+    except ffmpeg.Error as e:
+        err_msg = e.stderr.decode('utf8') if e.stderr else str(e)
+        raise Exception(f"ffmpeg error: {err_msg}")
 
 def generate_clips(
     audio_url: str, 
