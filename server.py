@@ -21,7 +21,7 @@ def process_queue():
                 time.sleep(5)
                 continue
                 
-            res = requests.get('https://reedclip.com/api/queue/pop', headers={'Authorization': f'Bearer {auth_key}'})
+            res = requests.get('https://www.reedclip.com/api/queue/pop', headers={'Authorization': f'Bearer {auth_key}'})
             if not res.ok:
                 time.sleep(5)
                 continue
@@ -64,12 +64,12 @@ def process_queue():
                     final_video_url = os.environ['R2_PUBLIC_URL'] + f"/{job_id}.mp4"
                     
                     print(f"Pinging webhook for {job_id} with url {final_video_url}")
-                    requests.post('https://reedclip.com/api/webhook/vast', json={'jobId': job_id, 'videoUrl': final_video_url})
+                    requests.post('https://www.reedclip.com/api/webhook/vast', json={'jobId': job_id, 'videoUrl': final_video_url})
                     print(f"Job {job_id} finished successfully.")
             except Exception as e:
                 print(f"Job {job_id} failed: {e}")
                 try:
-                    requests.post('https://reedclip.com/api/webhook/vast', json={'jobId': job_id, 'error': str(e)})
+                    requests.post('https://www.reedclip.com/api/webhook/vast', json={'jobId': job_id, 'error': str(e)})
                 except:
                     pass
             finally:
