@@ -11,7 +11,7 @@ import time
 app = FastAPI()
 
 processing = False
-vast_api_key = os.environ.get('VAST_API_KEY', '')
+auth_key = os.environ.get('R2_ACCESS_KEY_ID', '')
 
 def process_queue():
     global processing
@@ -21,7 +21,7 @@ def process_queue():
                 time.sleep(5)
                 continue
                 
-            res = requests.get('https://reedclip.com/api/queue/pop', headers={'Authorization': f'Bearer {vast_api_key}'})
+            res = requests.get('https://reedclip.com/api/queue/pop', headers={'Authorization': f'Bearer {auth_key}'})
             if not res.ok:
                 time.sleep(5)
                 continue
