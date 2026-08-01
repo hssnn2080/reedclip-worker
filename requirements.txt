@@ -2,7 +2,7 @@ vastai
 fastapi
 uvicorn
 ffmpeg-python
-yt-dlp
+yt-dlp@git+https://github.com/yt-dlp/yt-dlp.git@master
 boto3
 requests
 pillow
